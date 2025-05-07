@@ -1,0 +1,42 @@
+# Project Configuration
+
+## Project Type
+- Marketing website with modern design and simple contact functionality
+
+## Tech Stack
+- Next.js 14+ with App Router
+- Tailwind CSS for styling
+- Optional: Minimal Supabase usage for contact form submissions
+- Vercel for deployment
+- GitHub for version control
+
+## Project Structure
+/src
+  /app         # Next.js App Router pages
+  /components  # React components
+  /lib         # Utility functions
+  /types       # TypeScript types
+/public        # Static assets
+
+## Content Focus
+- Clear presentation of marketing information
+- Strategic placement of call-to-action elements
+- Responsive design for all device sizes
+- Performance optimization for fast page loads
+
+## Development Workflow
+- Cline helps write and review code changes
+- Vercel automatically deploys from main branch
+- Focus on design consistency and user experience
+
+## SEO Considerations
+- Semantic HTML structure
+- Proper metadata for pages
+- Optimized image sizes and loading
+- Core Web Vitals optimization
+
+## Security
+DO NOT read or modify:
+- .env files
+- **/config/secrets.*
+- Any file containing API keys or credentials
