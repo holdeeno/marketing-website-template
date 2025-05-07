@@ -1,12 +1,13 @@
 # Next.js Marketing Website Template
 
-A modern, high-performance marketing website template built with Next.js 14+ and Tailwind CSS, with optional Supabase integration for contact form submissions.
+A modern, high-performance marketing website template built with Next.js 14+, Tailwind CSS, and Sanity CMS, with optional Supabase integration for contact form submissions.
 
 ## Features
 
 - 🚀 **Next.js 14+** with App Router for improved performance
 - 💅 **Tailwind CSS** for utility-first styling
-- �� **Simple Contact Form** with optional Supabase backend
+- 📝 **Sanity CMS** for content management
+- 📞 **Simple Contact Form** with optional Supabase backend
 - 📦 **TypeScript** for type safety
 - 📱 **Responsive Design** for all device sizes
 - ♿ **Accessibility** focused components
@@ -38,13 +39,13 @@ npm install
 yarn install
 ```
 
-3. Set up environment variables (only needed for contact form)
+3. Set up environment variables
 
 ```bash
 cp .env.example .env.local
 ```
 
-Edit `.env.local` with your Supabase credentials if you plan to use the contact form functionality.
+Edit `.env.local` with your Supabase credentials if you plan to use the contact form functionality, and your Sanity project details for the CMS.
 
 4. Start the development server
 
@@ -63,8 +64,11 @@ yarn dev
 ├── public/             # Static assets
 ├── src/
 │   ├── app/            # Next.js App Router pages
+│   │   └── studio/     # Sanity Studio
 │   ├── components/     # React components
 │   ├── lib/            # Utility functions
+│   │   └── sanity/     # Sanity configuration and helpers
+│   ├── sanity-studio/  # Sanity schema definitions
 │   └── types/          # TypeScript types
 └── ...
 ```
@@ -77,6 +81,22 @@ If you want to enable the contact form functionality:
 2. Get your API URL and anon key from the project settings
 3. Add them to your `.env.local` file
 4. Create the contact_submissions table using the migration in `supabase/migrations/001_create_contact_submissions_table.sql`
+
+## Sanity CMS Setup
+
+To use the Sanity CMS functionality:
+
+1. Create a Sanity project at [sanity.io](https://www.sanity.io/)
+2. Get your project ID from the project settings
+3. Add the project ID and other required variables to your `.env.local` file:
+   ```
+   NEXT_PUBLIC_SANITY_PROJECT_ID=your-sanity-project-id
+   NEXT_PUBLIC_SANITY_DATASET=production
+   NEXT_PUBLIC_SANITY_API_VERSION=2023-05-03
+   SANITY_API_TOKEN=your-sanity-api-token
+   ```
+4. Access the Sanity Studio at `/studio`
+5. Create content for your site through the Sanity Studio interface
 
 ## CSS Styling
 
@@ -95,7 +115,7 @@ This project is ready to deploy on Vercel:
 1. Push your code to GitHub
 2. Create a new project on [Vercel](https://vercel.com)
 3. Import your GitHub repository
-4. Add your environment variables (if using contact form)
+4. Add your environment variables (for Sanity CMS and optional contact form)
 5. Deploy
 
 ## Contributing

@@ -1,87 +1,85 @@
 # Active Context
 
 ## Current Work Focus
-The project is currently in the initial setup and planning phase. The main focuses are:
+The project is currently in the active development phase. The main focuses are:
 
-1. **Project Structure Setup**: Establishing the foundation directory structure and configuration files
-2. **Documentation**: Creating comprehensive documentation through the Memory Bank system
-3. **Technical Stack Selection**: Finalizing technology choices and implementation patterns
-4. **Environment Configuration**: Setting up development environment and tooling
+1. **Content Management with Sanity**: Working with Sanity CMS for structured content management
+2. **Component Development**: Building and refining UI components based on Sanity schemas
+3. **Data Integration**: Connecting frontend components with Sanity content and Supabase backend
+4. **User Experience Refinement**: Ensuring responsive design and optimal user flows
 
 ## Recent Changes
-As this is the project initialization, there are no prior changes to document. The most recent developments include:
+The most recent developments include:
 
-- Creation of the Memory Bank documentation system
-- Definition of the project brief and requirements
-- Establishment of technical approach and architecture
-- Selection of the tech stack (Next.js, Tailwind CSS, Supabase, Vercel)
+- Integration of Sanity CMS with schema definitions for main content types
+- Creation of core UI components (Hero, Features, CTA, Contact, Header, Footer)
+- Implementation of Sanity Studio at /studio route
+- Setting up Supabase database with contact submissions table
+- TypeScript type definitions for Sanity schema content
 
 ## Next Steps
 The immediate next steps for the project are:
 
-1. **Project Initialization**:
-   - Set up Next.js with App Router
-   - Configure Tailwind CSS
-   - Initialize TypeScript
-   - Set up linting and formatting tools
+1. **Content Management Refinement**:
+   - Optimize Sanity schemas based on content needs
+   - Enhance Studio customization if needed
+   - Add additional content types if required
 
-2. **Core Structure Implementation**:
-   - Create basic layout components
-   - Implement routing structure
-   - Set up Supabase connection
-   - Configure authentication foundation
+2. **Frontend Optimization**:
+   - Ensure responsive design works across all device sizes
+   - Optimize image loading and performance
+   - Refine component styling and interactions
+   - Implement any missing UI elements
 
-3. **Development Environment**:
-   - Set up local development environment
-   - Configure environment variables
-   - Establish connection to Supabase instance
-   - Set up deployment pipeline to Vercel
+3. **Backend Functionality**:
+   - Complete contact form submission processing
+   - Finalize database structure
+   - Implement any additional API endpoints
+   - Test form submissions and data flow
 
-4. **Initial Feature Implementation**:
-   - Implement basic page structure
-   - Create authentication flows
-   - Set up database tables and relationships
-   - Develop core UI components
+4. **Testing & Quality Assurance**:
+   - Cross-browser testing
+   - Accessibility review
+   - Performance optimization
+   - Content management workflow testing
 
 ## Active Decisions and Considerations
 
 ### Under Consideration
-- **UI Component Library**: Evaluating whether to use a pre-built component library like shadcn/ui or build custom components from scratch
-- **Authentication Approach**: Deciding between Supabase Auth UI components or custom auth implementation
-- **Database Schema**: Designing the initial database schema and relationships
-- **Deployment Strategy**: Determining staging and production deployment workflows
+- **Content Preview**: Implementing draft/preview functionality for Sanity content
+- **Animation Strategy**: Deciding on approach for UI animations and transitions
+- **SEO Optimization**: Enhancing metadata and structured data
+- **Analytics Integration**: Adding analytics tools for visitor tracking
 
 ### Recently Decided
-- Use Next.js App Router instead of Pages Router for modern React features
-- Implement TypeScript from the start for code quality and developer experience
-- Use Tailwind CSS for styling to ensure consistency and rapid development
-- Leverage Supabase as the backend solution for simplicity and feature set
+- Use Sanity CMS for content management instead of hard-coded content
+- Implement Sanity Studio directly within Next.js app at /studio route
+- Structure components to match Sanity schema definitions
+- Use TypeScript interfaces to ensure type safety with Sanity data
 
 ## Important Patterns and Preferences
 
 ### Code Structure
-- Component-first organization
-- Feature-based directory structure within app directory
-- Shared components in a central components directory
-- Utility functions organized by domain in lib directory
+- Component-first organization with each major section having dedicated components
+- Sanity schemas organized by content type
+- Shared utilities in lib directory (sanity client, image helpers, queries)
+- Type definitions to match Sanity schema structure
 
 ### Naming Conventions
 - PascalCase for React components
 - camelCase for functions and variables
-- kebab-case for file names (except for React components)
-- Descriptive, intention-revealing names
+- Descriptive names for Sanity schemas that match their usage
 
 ### Development Practices
 - Mobile-first responsive design
-- Progressive enhancement approach
-- Accessibility as a core requirement
-- Performance optimization from the beginning
-- Regular commits with descriptive messages
+- TypeScript for type safety
+- Structured content modeling in Sanity
+- Component isolation for maintainability
 
 ## Learnings and Project Insights
-As the project is just beginning, we're establishing baseline practices. Key insights so far:
 
-- The combination of Next.js 14+ with App Router and Supabase provides a powerful, yet simple development experience
-- Tailwind CSS significantly speeds up UI development while maintaining consistency
-- TypeScript integration from project start prevents type-related bugs and improves documentation
-- A well-structured Memory Bank documentation system ensures continuity despite context resets
+- The combination of Next.js App Router with Sanity CMS provides a powerful headless CMS solution
+- Sanity Studio integration directly in the Next.js app provides a seamless content management experience
+- TypeScript interfaces for Sanity content ensures type safety across the content pipeline
+- Structured content in Sanity allows for flexible presentation while maintaining content integrity
+- Supabase provides an efficient backend solution for form submissions and data storage

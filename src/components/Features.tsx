@@ -1,7 +1,147 @@
 "use client";
 
-export default function Features() {
-  const features = [
+import { FeaturesSection } from "@/types/sanity";
+
+interface FeaturesProps {
+  data?: FeaturesSection;
+}
+
+export default function Features({ data }: FeaturesProps) {
+  // If no data is provided, use default content
+  const title = data?.title || "Everything you need to build modern websites";
+  const subtitle = data?.subtitle || "Features";
+  const description = data?.description || "This template includes everything you need to build high-performance, beautiful, and functional websites.";
+  
+  // Helper function to get icon by name
+  const getIconByName = (iconName?: string) => {
+    // Default icon if none specified or not found
+    const defaultIcon = (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+        />
+      </svg>
+    );
+
+    // Map of icon names to SVG components
+    const icons: Record<string, JSX.Element> = {
+      'lightning': (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+          />
+        </svg>
+      ),
+      'brush': (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"
+          />
+        </svg>
+      ),
+      'code': (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
+          />
+        </svg>
+      ),
+      'database': (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
+          />
+        </svg>
+      ),
+      'mobile': (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
+          />
+        </svg>
+      ),
+      'accessibility': (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+          />
+        </svg>
+      ),
+    };
+
+    if (!iconName || !icons[iconName]) return defaultIcon;
+    return icons[iconName];
+  };
+  
+  // Use data from CMS or fallback to default features
+  const features = data?.featureItems ? data.featureItems.map(item => ({
+    title: item.title,
+    description: item.description,
+    icon: getIconByName(item.icon)
+  })) : [
     {
       title: "Next.js 14",
       description:
@@ -66,9 +206,9 @@ export default function Features() {
       ),
     },
     {
-      title: "Supabase",
+      title: "Sanity CMS",
       description:
-        "Open source Firebase alternative with authentication, database, storage, and serverless functions.",
+        "Headless CMS that gives you an instant API for structured content with powerful editing capabilities.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -136,14 +276,13 @@ export default function Features() {
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <div className="inline-block rounded-lg bg-primary-100 px-3 py-1 text-sm text-primary-600">
-              Features
+              {subtitle}
             </div>
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
-              Everything you need to build modern websites
+              {title}
             </h2>
             <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-              This template includes everything you need to build high-performance,
-              beautiful, and functional websites.
+              {description}
             </p>
           </div>
         </div>

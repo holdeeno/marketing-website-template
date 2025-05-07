@@ -6,13 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sanity-deploy": "SANITY_AUTH_TOKEN=$SANITY_DEPLOY_STUDIO_TOKEN npx sanity@latest deploy",
+    "sanity-deploy-graphql": "SANITY_AUTH_TOKEN=$SANITY_DEPLOY_STUDIO_TOKEN npx sanity@latest graphql deploy"
   },
   "dependencies": {
+    "@sanity/client": "^7.1.0",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.88.1",
     "@supabase/supabase-js": "^2.47.0",
     "next": "^14.1.0",
+    "next-sanity": "^9.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sanity": "^3.88.1",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

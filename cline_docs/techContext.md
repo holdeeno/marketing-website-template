@@ -8,6 +8,13 @@
 - **Tailwind CSS**: Utility-first CSS framework for styling
 - **TypeScript**: Typed JavaScript for improved developer experience and code quality
 
+### Content Management
+- **Sanity CMS**: Headless CMS for structured content management
+  - Custom schemas for various content types
+  - Sanity Studio embedded in Next.js app
+  - Image handling and optimization
+  - Content querying with GROQ
+
 ### Backend
 - **Next.js API Routes**: Serverless API endpoints
 - **Supabase**: Backend-as-a-Service platform providing:
@@ -36,6 +43,7 @@
 2. Set up local environment variables in `.env.local`
 3. Run `npm run dev` to start development server
 4. Access the application at `http://localhost:3000`
+5. Access Sanity Studio at `http://localhost:3000/studio`
 
 ### Build Process
 - **Development**: `npm run dev` - Starts Next.js development server
@@ -81,6 +89,9 @@
 - typescript
 - tailwindcss
 - @supabase/supabase-js
+- @sanity/client
+- @sanity/image-url
+- next-sanity
 
 ### Development Dependencies
 - eslint
@@ -99,6 +110,13 @@
 - **Icons**: heroicons or other icon libraries
 
 ## Tool Usage Patterns
+
+### Sanity Usage
+- Schema definitions for structured content
+- GROQ queries for content fetching
+- Image handling with @sanity/image-url
+- Studio customization for content editors
+- Content portability across environments
 
 ### Supabase Usage
 - Direct database access via Supabase client

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { submitContactForm } from "@/lib/supabase";
+import { useState, useRef, useEffect } from "react";
+import { validateContactForm, submitContactForm } from "@/lib/supabase";
 import { ContactFormData, ContactFormState } from "@/types";
 
 export default function ContactForm() {
@@ -14,81 +14,109 @@ export default function ContactForm() {
   const [formState, setFormState] = useState<ContactFormState>({
     isSubmitting: false,
     isSubmitted: false,
-    error: null
+    error: null,
+    successMessage: null
   });
+  
+  // For tracking character count in message
+  const [messageCharCount, setMessageCharCount] = useState(0);
+  
+  // For focusing error fields
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const messageInputRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Effect for focusing first field with error
+  useEffect(() => {
+    if (formState.error) {
+      const errorLowerCase = formState.error.toLowerCase();
+      if (errorLowerCase.includes('name')) {
+        nameInputRef.current?.focus();
+      } else if (errorLowerCase.includes('email')) {
+        emailInputRef.current?.focus();
+      } else if (errorLowerCase.includes('message')) {
+        messageInputRef.current?.focus();
+      }
+    }
+  }, [formState.error]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    
+    // Clear error when field is being edited
+    if (formState.error) {
+      setFormState(prev => ({ ...prev, error: null }));
+    }
+    
+    // Update form data
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Update character count for message
+    if (name === 'message') {
+      setMessageCharCount(value.length);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple validation
-    if (!formData.name || !formData.email || !formData.message) {
-      setFormState({
-        isSubmitting: false,
-        isSubmitted: false,
-        error: "Please fill in all fields"
-      });
-      return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    if (!emailRegex.test(formData.email)) {
-      setFormState({
-        isSubmitting: false,
-        isSubmitted: false,
-        error: "Please enter a valid email address"
-      });
-      return;
-    }
-
-    setFormState({
+    // Clear previous errors
+    setFormState(prev => ({
+      ...prev,
       isSubmitting: true,
-      isSubmitted: false,
-      error: null
-    });
-
+      error: null,
+      successMessage: null
+    }));
+    
     try {
-      // Check if Supabase is configured
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        // Submit to Supabase
-        const result = await submitContactForm(formData);
+      // Submit the form data
+      const result = await submitContactForm(formData);
+      
+      if (result.success) {
+        // Success state
+        setFormState({
+          isSubmitting: false,
+          isSubmitted: true,
+          error: null,
+          successMessage: result.message || 'Your message has been sent successfully!'
+        });
         
-        if (!result.success) {
-          throw new Error("Failed to submit form");
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          message: ""
+        });
+        setMessageCharCount(0);
+        
+        // Track form submission success (can be replaced with actual analytics)
+        if (typeof window !== 'undefined') {
+          console.log('Form submission success tracked');
         }
       } else {
-        // Simulate form submission if Supabase is not configured
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log("Form would be submitted:", formData);
+        // Error state
+        setFormState({
+          isSubmitting: false,
+          isSubmitted: false,
+          error: result.error || 'Something went wrong. Please try again.',
+          successMessage: null
+        });
+        
+        // Track form submission failure (can be replaced with actual analytics)
+        if (typeof window !== 'undefined') {
+          console.log('Form submission failure tracked:', result.error);
+        }
       }
-      
-      // Success state
-      setFormState({
-        isSubmitting: false,
-        isSubmitted: true,
-        error: null
-      });
-      
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        message: ""
-      });
     } catch (error) {
+      console.error("Contact form submission error:", error);
       setFormState({
         isSubmitting: false,
         isSubmitted: false,
-        error: "Something went wrong. Please try again later."
+        error: 'An unexpected error occurred. Please try again later.',
+        successMessage: null
       });
-      console.error("Contact form error:", error);
     }
   };
 
@@ -104,6 +132,7 @@ export default function ContactForm() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -114,13 +143,18 @@ export default function ContactForm() {
           </div>
           <h3 className="mt-3 text-lg font-medium text-gray-900">Message sent!</h3>
           <p className="mt-2 text-sm text-gray-500">
-            Thank you for contacting us. We'll get back to you as soon as possible.
+            {formState.successMessage || 'Thank you for contacting us. We\'ll get back to you as soon as possible.'}
           </p>
           <div className="mt-6">
             <button
               type="button"
               className="inline-flex justify-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              onClick={() => setFormState({ isSubmitting: false, isSubmitted: false, error: null })}
+              onClick={() => setFormState({ 
+                isSubmitting: false, 
+                isSubmitted: false, 
+                error: null,
+                successMessage: null
+              })}
             >
               Send another message
             </button>
@@ -138,17 +172,23 @@ export default function ContactForm() {
             htmlFor="name" 
             className="block text-sm font-medium text-gray-700"
           >
-            Name
+            Name <span className="text-red-500">*</span>
           </label>
           <div className="mt-1">
             <input
               id="name"
               name="name"
               type="text"
+              ref={nameInputRef}
               required
               value={formData.name}
               onChange={handleChange}
-              className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              aria-describedby="name-error"
+              className={`block w-full rounded-md border ${
+                formState.error?.toLowerCase().includes('name') 
+                  ? 'border-red-300 ring-red-500' 
+                  : 'border-gray-300 focus:border-primary-500 focus:ring-primary-500'
+              } px-3 py-2 shadow-sm`}
             />
           </div>
         </div>
@@ -158,43 +198,69 @@ export default function ContactForm() {
             htmlFor="email" 
             className="block text-sm font-medium text-gray-700"
           >
-            Email
+            Email <span className="text-red-500">*</span>
           </label>
           <div className="mt-1">
             <input
               id="email"
               name="email"
               type="email"
+              ref={emailInputRef}
               required
               value={formData.email}
               onChange={handleChange}
-              className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              aria-describedby="email-error"
+              className={`block w-full rounded-md border ${
+                formState.error?.toLowerCase().includes('email') 
+                  ? 'border-red-300 ring-red-500' 
+                  : 'border-gray-300 focus:border-primary-500 focus:ring-primary-500'
+              } px-3 py-2 shadow-sm`}
             />
           </div>
         </div>
 
         <div>
-          <label 
-            htmlFor="message" 
-            className="block text-sm font-medium text-gray-700"
-          >
-            Message
-          </label>
+          <div className="flex justify-between">
+            <label 
+              htmlFor="message" 
+              className="block text-sm font-medium text-gray-700"
+            >
+              Message <span className="text-red-500">*</span>
+            </label>
+            <span className={`text-xs ${
+              messageCharCount > 1000 
+                ? 'text-red-500' 
+                : messageCharCount > 800 
+                  ? 'text-yellow-500' 
+                  : 'text-gray-500'
+            }`}>
+              {messageCharCount}/1000
+            </span>
+          </div>
           <div className="mt-1">
             <textarea
               id="message"
               name="message"
               rows={4}
+              ref={messageInputRef}
               required
               value={formData.message}
               onChange={handleChange}
-              className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              aria-describedby="message-error"
+              className={`block w-full rounded-md border ${
+                formState.error?.toLowerCase().includes('message') 
+                  ? 'border-red-300 ring-red-500' 
+                  : 'border-gray-300 focus:border-primary-500 focus:ring-primary-500'
+              } px-3 py-2 shadow-sm`}
             />
           </div>
+          <p className="mt-2 text-xs text-gray-500">
+            Please include any relevant details about your inquiry. We'll respond within 2 business days.
+          </p>
         </div>
 
         {formState.error && (
-          <div className="rounded-md bg-red-50 p-4">
+          <div className="rounded-md bg-red-50 p-4" role="alert">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -212,20 +278,34 @@ export default function ContactForm() {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-red-700">{formState.error}</p>
+                <p className="text-sm font-medium text-red-800">{formState.error}</p>
               </div>
             </div>
           </div>
         )}
 
-        <div>
+        <div className="pt-2">
           <button
             type="submit"
             disabled={formState.isSubmitting}
-            className="inline-flex w-full justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex w-full justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            aria-live="polite"
           >
-            {formState.isSubmitting ? "Sending..." : "Send Message"}
+            {formState.isSubmitting ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sending...
+              </span>
+            ) : (
+              "Send Message"
+            )}
           </button>
+          <p className="mt-2 text-xs text-center text-gray-500">
+            By submitting this form, you agree to our privacy policy and terms of service.
+          </p>
         </div>
       </div>
     </form>

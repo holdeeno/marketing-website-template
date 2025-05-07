@@ -1,16 +1,43 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { urlForImage } from "@/lib/sanity/image";
+import { FooterSection, SocialLink } from "@/types/sanity";
 
-export default function Footer() {
+interface FooterProps {
+  data?: FooterSection;
+}
+
+export default function Footer({ data }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const copyrightText = data?.copyrightText || `© ${currentYear} Website Template. All rights reserved.`;
+  
+  // Default social links if none provided
+  const socialLinks = data?.socialLinks || [
+    { platform: "twitter", url: "https://twitter.com" },
+    { platform: "linkedin", url: "https://linkedin.com" },
+    { platform: "facebook", url: "https://facebook.com" },
+  ];
 
   return (
     <footer className="w-full border-t border-gray-200 bg-white py-12">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Website Template</h3>
+            {data?.logo ? (
+              <div className="mb-4">
+                <Image 
+                  src={urlForImage(data.logo)} 
+                  alt="Website Logo"
+                  width={150}
+                  height={50}
+                  className="h-auto w-auto"
+                />
+              </div>
+            ) : (
+              <h3 className="text-xl font-bold">Website Template</h3>
+            )}
             <p className="text-sm text-gray-500">
               A modern, high-performance website template built with Next.js, Tailwind CSS, and Supabase.
             </p>
@@ -78,9 +105,29 @@ export default function Footer() {
         </div>
         <div className="mt-10 flex flex-col items-center justify-between space-y-4 border-t border-gray-200 pt-6 md:flex-row md:space-y-0">
           <p className="text-sm text-gray-600">
-            &copy; {currentYear} Website Template. All rights reserved.
+            {copyrightText}
           </p>
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4">
+            {/* Social links */}
+            {socialLinks?.length > 0 && (
+              <div className="flex space-x-4 mr-6">
+                {socialLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-primary-600"
+                    aria-label={link.platform}
+                  >
+                    {/* Simple icon representation */}
+                    <div className="w-5 h-5 flex items-center justify-center rounded-full bg-gray-200 text-gray-700">
+                      {link.platform.charAt(0).toUpperCase()}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
             <Link href="/terms" className="text-sm text-gray-600 hover:text-primary-600">
               Terms
             </Link>

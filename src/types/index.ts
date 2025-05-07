@@ -14,6 +14,7 @@ export type ContactFormState = {
   isSubmitting: boolean;
   isSubmitted: boolean;
   error: string | null;
+  successMessage: string | null;
 };
 
 /**
